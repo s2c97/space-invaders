@@ -392,7 +392,9 @@ class Game:
         self.font_md    = pygame.font.Font(None, 34)
         self.font_sm    = pygame.font.Font(None, 24)
         self.high_score = 0
-        self.sfx        = Sounds()
+        self.sfx               = Sounds()
+        self._screenshot_timer = 0
+        self._screenshot_msg   = ""
         # persistent settings
         self.sound_on   = True
         self.difficulty = "NORMAL"
@@ -680,6 +682,9 @@ class Game:
                     elif event.key == pygame.K_SPACE:
                         self._player_fire()
 
+                if event.key == pygame.K_F12:
+                    self._save_screenshot()
+
                 elif self.state in ("game_over", "win"):
                     if event.key in (pygame.K_r, pygame.K_RETURN,
                                      pygame.K_SPACE, pygame.K_ESCAPE):
@@ -688,6 +693,8 @@ class Game:
 
     def update(self):
         self._menu_anim = (self._menu_anim + 1) % 60 // 30  # 0 or 1, flips every 30 frames
+        if self._screenshot_timer > 0:
+            self._screenshot_timer -= 1
         if self.state != "playing":
             return
 
@@ -758,6 +765,12 @@ class Game:
             self._draw_game()
             self._overlay("YOU WIN!",
                           f"Score: {self.score}        press any key for menu")
+
+        if self._screenshot_timer > 0:
+            alpha = min(255, self._screenshot_timer * 6)
+            msg   = self.font_sm.render("Screenshot saved!", True, GREEN)
+            msg.set_alpha(alpha)
+            self.screen.blit(msg, (SCREEN_W // 2 - msg.get_width() // 2, SCREEN_H - 60))
 
         pygame.display.flip()
 
@@ -862,6 +875,13 @@ class Game:
         s  = self.font_md.render(sub,   True, YELLOW)
         self.screen.blit(t, (SCREEN_W // 2 - t.get_width() // 2, SCREEN_H // 2 - 44))
         self.screen.blit(s, (SCREEN_W // 2 - s.get_width() // 2, SCREEN_H // 2 + 20))
+
+    def _save_screenshot(self):
+        import os
+        path = os.path.join(os.path.dirname(__file__), "screenshot.png")
+        pygame.image.save(self.screen, path)
+        self._screenshot_msg   = "Screenshot saved!"
+        self._screenshot_timer = 120   # frames to show the message
 
     # ------------------------------------------------------------------
     def run(self):
