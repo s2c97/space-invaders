@@ -53,6 +53,8 @@ python main.py
 | Bottom rows (octopus) | 10 |
 | Mystery UFO | 150 |
 
-## Screenshot
+## Screenshots
 
-![Space Invaders gameplay](https://raw.githubusercontent.com/s2c97/space-invaders/master/screenshot.png)
+![Main menu](https://raw.githubusercontent.com/s2c97/space-invaders/master/screenshot.png)
+
+![Gameplay](https://raw.githubusercontent.com/s2c97/space-invaders/master/screenshot_gameplay.png)
